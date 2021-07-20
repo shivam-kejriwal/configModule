@@ -3,14 +3,12 @@
     "templateVersion":"v1.0.0",
     "templateName":"Template For InNote",
     "configFields" : {
-
         "brokenName":{
             "type":"boolean",
             "default":true,
             "desc":"Should the name be broken into different parts",
             "label":"Single Name"
         },
-
         "firstName":{
             "type":"string",
             "default":"First Name"
@@ -23,12 +21,10 @@
             "type":"boolean",
             "default":true
         },
-
         "termsAndConditions":{
             "type":"text",
             "default":"Terms & Conditions"
         },
-
         "maxLoginFails":{
             "type":"number",
             "default":5
