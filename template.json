@@ -15,6 +15,10 @@
             "type":"string",
             "default":"First Name"
         },
+        "lastName":{
+            "type":"string",
+            "default":"Last Name"
+        },
         "showTermsAndConditions":{
             "type":"boolean",
             "default":true
