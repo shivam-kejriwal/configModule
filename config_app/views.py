@@ -37,6 +37,7 @@ class ListConfigAPIView(APIView):
             return Response(e , status=status.HTTP_400_BAD_REQUEST)
         
         return_json = {}
+        return_json['count'] = len(get_configs)
         return_json['configs'] = get_configs
 
         return Response(return_json, status=status.HTTP_200_OK)
