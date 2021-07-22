@@ -45,13 +45,13 @@ class ConfigSerializer(serializers.Serializer):
     def validate(self, attrs):
 
         config_id = uuid.uuid4()
-        t_id = attrs['templateID']
+        t_id = attrs.get('templateID')
         try:
             template = data.config_template[t_id]
         except KeyError as e:
             raise serializers.ValidationError(e)
 
-        for key in attrs['values']:
+        for key in attrs.get('values'):
             try:
                 default_value = template['configFields'][key]['default']
             except KeyError as e:
