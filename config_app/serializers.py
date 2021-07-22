@@ -1,10 +1,13 @@
-from rest_framework import serializers
-from config_app import data
+import json
 import uuid
+
+from rest_framework import serializers
+
+from config_app import data
 
 
 class TemplateSerializer(serializers.Serializer):
-    templateID = serializers.UUIDField()
+    templateID = serializers.CharField(max_length=500)
     templateName = serializers.CharField(max_length=500)
     configFields = serializers.JSONField()
 
@@ -26,6 +29,10 @@ class TemplateSerializer(serializers.Serializer):
 
         # all new config values should be updated in the template
         data.config_template[template_id].update(attrs)
+
+        # update the default config template file
+        with open("config_app\\config_template.json", "w") as file:
+            json.dump(data.config_template[template_id], file)
 
         return super().validate(attrs)
 
