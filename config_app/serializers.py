@@ -3,6 +3,33 @@ from config_app import data
 import uuid
 
 
+class TemplateSerializer(serializers.Serializer):
+    templateID = serializers.UUIDField()
+    templateName = serializers.CharField(max_length=500)
+    configFields = serializers.JSONField()
+
+    def validate(self, attrs):
+
+        template_id = str(attrs.get('templateID'))
+
+        if template_id not in data.config_template.keys():
+            return serializers.ValidationError('Requested Template ID does not exist')
+
+        values = attrs.get('configFields')
+
+        # all new config fields added must have type and default
+        for key in values:
+            if 'default' not in values[key]:
+                raise serializers.ValidationError('Must include default')
+            if 'type' not in values[key]:
+                raise serializers.ValidationError('Must include type')
+
+        # all new config values should be updated in the template
+        data.config_template[template_id].update(attrs)
+
+        return super().validate(attrs)
+
+
 class ConfigSerializer(serializers.Serializer):
     configName = serializers.CharField()
     values = serializers.JSONField()
