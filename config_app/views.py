@@ -15,7 +15,7 @@ class ConfigAPIView(APIView):
 
 class TemplateAPIView(APIView):
     """
-    Get, Create the template
+    Get the Default Template
 
     """
 
