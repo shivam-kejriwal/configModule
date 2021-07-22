@@ -54,11 +54,15 @@ class ConfigSerializer(serializers.Serializer):
         for key in attrs['values']:
             try:
                 default_value = template['configFields'][key]['default']
+                dtype = template['configFields'][key]['type']
             except KeyError as e:
                 raise serializers.ValidationError(e)
 
             if checkForMismatch(attrs['values'][key], default_value):
                 raise serializers.ValidationError("Value for the field " + key + " doesn't matches it's dataType")
+
+            if dtype == 'string' and len(attrs['values'][key]) > 100:
+                raise serializers.ValidationError("Value for the field " + key + " exceeds the limit for the Single line Text")
 
         attrs['configID'] = config_id
         data.current_configs[config_id] = attrs

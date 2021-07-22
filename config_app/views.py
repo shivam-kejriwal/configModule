@@ -16,17 +16,13 @@ class ConfigAPIView(APIView):
 class TemplateAPIView(APIView):
     """
     Get the Default Template
-<<<<<<< HEAD
-=======
-
->>>>>>> 289337de2055b30eb12d887862034d9454f4ae17
     """
 
     def get(self, request):
         try:
             get_template = data.config_template.values()
         except Exception as e:
-            return Response(e, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"success" : False}, status=status.HTTP_400_BAD_REQUEST)
 
         return Response(get_template, status=status.HTTP_200_OK)
 
@@ -37,7 +33,7 @@ class ListConfigAPIView(APIView):
         try:
             get_configs = data.current_configs.values()
         except Exception as e:
-            return Response(e, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"success" : False}, status=status.HTTP_400_BAD_REQUEST)
 
         return_json = {'count': len(get_configs), 'configs': get_configs}
 
