@@ -38,9 +38,9 @@ class TemplateSerializer(serializers.Serializer):
 
 
 class ConfigSerializer(serializers.Serializer):
-    configName = serializers.CharField()
+    configName = serializers.CharField(max_length=500)
     values = serializers.JSONField()
-    templateID = serializers.CharField()
+    templateID = serializers.CharField(max_length=500)
 
     def validate(self, attrs):
 
