@@ -16,6 +16,10 @@ class ConfigAPIView(APIView):
 class TemplateAPIView(APIView):
     """
     Get the Default Template
+<<<<<<< HEAD
+=======
+
+>>>>>>> 289337de2055b30eb12d887862034d9454f4ae17
     """
 
     def get(self, request):

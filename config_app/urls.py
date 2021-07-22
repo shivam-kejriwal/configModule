@@ -6,3 +6,4 @@ urlpatterns = [
     path('template/', TemplateAPIView.as_view()),
     path('config/', ListConfigAPIView.as_view())
 ]
+
