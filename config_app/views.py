@@ -8,7 +8,12 @@ from config_app import data
 class ConfigAPIView(APIView):
 
     def post(self, request):
-        serializer = ConfigSerializer(data=request.data , context = {'method' : request.method} )
+
+        context = {
+            'method': request.method
+        }
+
+        serializer = ConfigSerializer(data=request.data, context=context)
         if serializer.is_valid(raise_exception=True):
             return Response(serializer.validated_data, status=status.HTTP_201_CREATED)
 
@@ -22,7 +27,7 @@ class TemplateAPIView(APIView):
         try:
             get_template = data.config_template.values()
         except Exception as e:
-            return Response({"success" : False}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"success": False}, status=status.HTTP_400_BAD_REQUEST)
 
         return Response(get_template, status=status.HTTP_200_OK)
 
@@ -33,7 +38,7 @@ class ListConfigAPIView(APIView):
         try:
             get_configs = data.current_configs.values()
         except Exception as e:
-            return Response({"success" : False}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"success": False}, status=status.HTTP_400_BAD_REQUEST)
 
         return_json = {'count': len(get_configs), 'configs': get_configs}
 
@@ -42,31 +47,51 @@ class ListConfigAPIView(APIView):
 
 class CheckConfigAPIView(APIView):
 
-    def get(self , request):
+    def get(self, request):
         json_data = {}
-        config_id = request.query_params.get('configID' , None)
-        template_id = request.query_params.get('templateID' , None) 
-        error_message = {'success' : False}
+        config_id = request.query_params.get('configID', None)
+        template_id = request.query_params.get('templateID', None)
+        error_message = {'success': False}
 
-        if template_id is not None :
-            try : 
+        if template_id is not None:
+            try:
                 json_data['template'] = data.config_template[template_id]
             except Exception as e:
                 error_message['message'] = 'templateID key not found'
-                return Response(error_message , status=status.HTTP_400_BAD_REQUEST)
+                return Response(error_message, status=status.HTTP_400_BAD_REQUEST)
         else:
             error_message['message'] = 'missing templateID in URL'
-            return Response(error_message, status = status.HTTP_404_NOT_FOUND)
+            return Response(error_message, status=status.HTTP_404_NOT_FOUND)
 
-        if config_id is not None :
-            try :
+        if config_id is not None:
+            try:
                 json_data['config'] = data.current_configs[config_id]
             except Exception as e:
                 error_message['message'] = 'configID key not found'
-                return Response(error_message , status=status.HTTP_400_BAD_REQUEST)
+                return Response(error_message, status=status.HTTP_400_BAD_REQUEST)
         else:
             error_message['message'] = 'missing configID in URL'
-            return Response(error_message, status = status.HTTP_404_NOT_FOUND)
+            return Response(error_message, status=status.HTTP_404_NOT_FOUND)
+
+        return Response(json_data, status=status.HTTP_200_OK)
 
 
-        return Response(json_data , status = status.HTTP_200_OK) 
+class EditConfigAPIView(APIView):
+    """
+
+    Edit a Particular Configuration
+
+    """
+
+    def patch(self, request, config_id):
+
+        context = {
+            'method': request.method,
+            'config_id': str(config_id)
+        }
+
+        serializer = ConfigSerializer(data=request.data, context=context)
+        if serializer.is_valid(raise_exception=True):
+            return Response(serializer.validated_data, status=status.HTTP_201_CREATED)
+
+
