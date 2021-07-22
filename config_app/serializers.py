@@ -44,7 +44,6 @@ class ConfigSerializer(serializers.Serializer):
 
     def validate(self, attrs):
 
-        config_id = uuid.uuid4()
         t_id = attrs['templateID']
         try:
             template = data.config_template[t_id]
@@ -63,9 +62,13 @@ class ConfigSerializer(serializers.Serializer):
 
             if dtype == 'string' and len(attrs['values'][key]) > 100:
                 raise serializers.ValidationError("Value for the field " + key + " exceeds the limit for the Single line Text")
-
-        attrs['configID'] = config_id
-        data.current_configs[config_id] = attrs
+        
+        
+        method = self.context.get('method')
+        if method == 'POST':
+            config_id = uuid.uuid4()
+            attrs['configID'] = config_id
+            data.current_configs[config_id] = attrs
 
         return super().validate(attrs)
 

@@ -8,7 +8,7 @@ from config_app import data
 class ConfigAPIView(APIView):
 
     def post(self, request):
-        serializer = ConfigSerializer(data=request.data)
+        serializer = ConfigSerializer(data=request.data , context = {'method' : request.method} )
         if serializer.is_valid(raise_exception=True):
             return Response(serializer.validated_data, status=status.HTTP_201_CREATED)
 
