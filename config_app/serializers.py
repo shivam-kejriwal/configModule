@@ -66,7 +66,7 @@ class ConfigSerializer(serializers.Serializer):
         
         method = self.context.get('method')
         if method == 'POST':
-            config_id = uuid.uuid4()
+            config_id = str(uuid.uuid4())
             attrs['configID'] = config_id
             data.current_configs[config_id] = attrs
 

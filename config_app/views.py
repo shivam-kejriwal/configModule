@@ -38,3 +38,35 @@ class ListConfigAPIView(APIView):
         return_json = {'count': len(get_configs), 'configs': get_configs}
 
         return Response(return_json, status=status.HTTP_200_OK)
+
+
+class CheckConfigAPIView(APIView):
+
+    def get(self , request):
+        json_data = {}
+        config_id = request.query_params.get('configID' , None)
+        template_id = request.query_params.get('templateID' , None) 
+        error_message = {'success' : False}
+
+        if template_id is not None :
+            try : 
+                json_data['template'] = data.config_template[template_id]
+            except Exception as e:
+                error_message['message'] = 'templateID key not found'
+                return Response(error_message , status=status.HTTP_400_BAD_REQUEST)
+        else:
+            error_message['message'] = 'missing templateID in URL'
+            return Response(error_message, status = status.HTTP_404_NOT_FOUND)
+
+        if config_id is not None :
+            try :
+                json_data['config'] = data.current_configs[config_id]
+            except Exception as e:
+                error_message['message'] = 'configID key not found'
+                return Response(error_message , status=status.HTTP_400_BAD_REQUEST)
+        else:
+            error_message['message'] = 'missing configID in URL'
+            return Response(error_message, status = status.HTTP_404_NOT_FOUND)
+
+
+        return Response(json_data , status = status.HTTP_200_OK) 
