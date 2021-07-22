@@ -7,8 +7,8 @@ from config_app import data
 
 
 class TemplateSerializer(serializers.Serializer):
-    templateID = serializers.CharField(max_length=500)
-    templateName = serializers.CharField(max_length=500)
+    templateID = serializers.CharField(max_length=100)
+    templateName = serializers.CharField(max_length=100)
     configFields = serializers.JSONField()
 
     def validate(self, attrs):
@@ -38,9 +38,9 @@ class TemplateSerializer(serializers.Serializer):
 
 
 class ConfigSerializer(serializers.Serializer):
-    configName = serializers.CharField(max_length=500)
+    configName = serializers.CharField(max_length=100)
     values = serializers.JSONField()
-    templateID = serializers.CharField(max_length=500)
+    templateID = serializers.CharField(max_length=100)
 
     def validate(self, attrs):
 
