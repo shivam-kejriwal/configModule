@@ -10,23 +10,28 @@
     },
     "firstName": {
       "type": "string",
-      "default": "First Name"
+      "default": "First Name",
+      "label": "First Name"
     },
     "lastName": {
         "type": "string",
-        "default": "Last Name"
+        "default": "Last Name",
+        "label": "Last Name"
     },
     "showTermsAndConditions": {
       "type": "boolean",
-      "default": true
+      "default": true,
+      "label": "Show Terms and Conditions"
     },
     "termsAndConditions": {
       "type": "text",
-      "default": "Terms & Conditions"
+      "default": "Terms & Conditions",
+      "label": "Terms & Conditions"
     },
     "maxLoginFails": {
       "type": "number",
-      "default": 5
+      "default": 5,
+      "label": "Max login and Fails"
     }
   }
 }
