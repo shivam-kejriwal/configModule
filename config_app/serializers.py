@@ -32,7 +32,7 @@ class TemplateSerializer(serializers.Serializer):
 
         # update the default config template file
         with open("config_app\\config_template.json", "w") as file:
-            json.dump(data.config_template[template_id], file)
+            json.dump(data.config_template[template_id], file, indent=2)
 
         return super().validate(attrs)
 
