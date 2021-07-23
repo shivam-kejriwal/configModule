@@ -6,8 +6,9 @@ from rest_framework import serializers
 from config_app import data
 
 
+# Serialize a Template
 class TemplateSerializer(serializers.Serializer):
-    templateID = serializers.CharField(max_length=500)
+    templateID = serializers.CharField(max_length=150)
     templateName = serializers.CharField(max_length=500)
     configFields = serializers.JSONField()
 
@@ -37,10 +38,11 @@ class TemplateSerializer(serializers.Serializer):
         return super().validate(attrs)
 
 
+# Serialize a Config
 class ConfigSerializer(serializers.Serializer):
-    configName = serializers.CharField()
+    configName = serializers.CharField(max_length=500)
     values = serializers.JSONField()
-    templateID = serializers.CharField()
+    templateID = serializers.CharField(max_length=150)
 
     def validate(self, attrs):
 
@@ -61,14 +63,18 @@ class ConfigSerializer(serializers.Serializer):
                 raise serializers.ValidationError("Value for the field " + key + " doesn't matches it's dataType")
 
             if dtype == 'string' and len(attrs['values'][key]) > 100:
-                raise serializers.ValidationError("Value for the field " + key + " exceeds the limit for the Single line Text")
-        
-        
+                raise serializers.ValidationError(
+                    "Value for the field " + key + " exceeds the limit for the Single line Text")
+
         method = self.context.get('method')
         if method == 'POST':
             config_id = str(uuid.uuid4())
             attrs['configID'] = config_id
             data.current_configs[config_id] = attrs
+        elif method == 'PATCH':
+            config_id = self.context.get('config_id')
+            data.current_configs[config_id]['values'].update(attrs['values'])
+            attrs = data.current_configs[config_id]
 
         return super().validate(attrs)
 
