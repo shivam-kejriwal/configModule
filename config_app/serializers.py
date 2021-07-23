@@ -73,8 +73,8 @@ class ConfigSerializer(serializers.Serializer):
             data.current_configs[config_id] = attrs
         elif method == 'PATCH':
             config_id = self.context.get('config_id')
-            attrs['configID'] = config_id
-            data.current_configs[config_id] = attrs
+            data.current_configs[config_id]['values'].update(attrs['values'])
+            attrs = data.current_configs[config_id]
 
         return super().validate(attrs)
 
