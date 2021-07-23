@@ -1,13 +1,17 @@
+from os import error
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from .serializers import ConfigSerializer
 from config_app import data
 
+from config_app import serializers
+
 
 class ConfigAPIView(APIView):
 
     def post(self, request):
+        print(request.data)
         serializer = ConfigSerializer(data=request.data , context = {'method' : request.method} )
         if serializer.is_valid(raise_exception=True):
             return Response(serializer.validated_data, status=status.HTTP_201_CREATED)
