@@ -72,9 +72,11 @@ class ConfigSerializer(serializers.Serializer):
             attrs['configID'] = config_id
             data.current_configs[config_id] = attrs
         elif method == 'PATCH':
-            print(data.current_configs)
             config_id = self.context.get('config_id')
-            data.current_configs[config_id]['values'].update(attrs['values'])
+            try : 
+                data.current_configs[config_id]['values'].update(attrs['values'])
+            except KeyError as e:
+                raise serializers.ValidationError(e)
             attrs = data.current_configs[config_id]
 
         return super().validate(attrs)
