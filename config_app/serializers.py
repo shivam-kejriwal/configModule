@@ -67,13 +67,19 @@ class ConfigSerializer(serializers.Serializer):
                     "Value for the field " + key + " exceeds the limit for the Single line Text")
 
         method = self.context.get('method')
+
         if method == 'POST':
             config_id = str(uuid.uuid4())
-            attrs['configID'] = config_id
+            attrs['configID'] = config_id            
+            values = attrs['values'].copy()
+            attrs['values'] = data.default_values.copy()
+            attrs['values'].update(values)
             data.current_configs[config_id] = attrs
+
         elif method == 'PATCH':
             config_id = self.context.get('config_id')
             try : 
+                data.current_configs[config_id]['configName'] = attrs['configName']
                 data.current_configs[config_id]['values'].update(attrs['values'])
             except KeyError as e:
                 raise serializers.ValidationError(e)
@@ -86,3 +92,7 @@ def checkForMismatch(data, value):
     if type(data) != type(value):
         return True
     return False
+
+
+
+
