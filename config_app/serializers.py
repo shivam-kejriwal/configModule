@@ -28,12 +28,32 @@ class TemplateSerializer(serializers.Serializer):
             if 'type' not in values[key]:
                 raise serializers.ValidationError('Must include type')
 
-        # all new config values should be updated in the template
-        data.config_template[template_id].update(attrs)
+            # all new config fields must added to all existing configs with the default values
+            for config_id in data.current_configs:
+                if key not in data.current_configs[config_id]['values']:
+                    data.current_configs[config_id]['values'][key] = values[key]['default']
 
-        # update the default config template file
-        with open("config_app\\config_template.json", "w") as file:
-            json.dump(data.config_template[template_id], file)
+        method = self.context.get('method')
+
+        if method == 'POST':
+
+            # update template name
+            data.config_template[template_id]['templateName'] = attrs.get('templateName')
+
+            # all new config values should be updated in the template
+            data.config_template[template_id]['configFields'].update(values)
+
+            # all new config fields must added to all existing configs with the default values
+            for key in values:
+                for config_id in data.current_configs:
+                    if key not in data.current_configs[config_id]['values']:
+                        data.current_configs[config_id]['values'][key] = values[key]['default']
+
+            # update the default config template file
+            with open("config_app\\config_template.json", "w") as file:
+                json.dump(data.config_template[template_id], file)
+
+            attrs = data.config_template[template_id]
 
         return super().validate(attrs)
 
@@ -73,10 +93,15 @@ class ConfigSerializer(serializers.Serializer):
             data.current_configs[config_id] = attrs
         elif method == 'PATCH':
             config_id = self.context.get('config_id')
-            try : 
+
+            # check config id available?
+            try:
                 data.current_configs[config_id]['values'].update(attrs['values'])
             except KeyError as e:
                 raise serializers.ValidationError(e)
+
+            data.current_configs[config_id]['configName'] = (attrs.get('configName'))
+
             attrs = data.current_configs[config_id]
 
         return super().validate(attrs)
