@@ -95,7 +95,7 @@ class EditConfigAPIView(APIView):
 
 
 class BulkUpdateAPIView(APIView):
-    print('HERE')
+
     """
 
     This API is used to update the template,
