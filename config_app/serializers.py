@@ -37,6 +37,7 @@ class TemplateSerializer(serializers.Serializer):
 
         if method == 'POST':
 
+            newly_added_keys = data.CreateDefaultObject(attrs)
             # update template name
             data.config_template[template_id]['templateName'] = attrs.get('templateName')
 
@@ -44,14 +45,11 @@ class TemplateSerializer(serializers.Serializer):
             data.config_template[template_id]['configFields'].update(values)
 
             # all new config fields must added to all existing configs with the default values
-            for key in values:
-                for config_id in data.current_configs:
-                    if key not in data.current_configs[config_id]['values']:
-                        data.current_configs[config_id]['values'][key] = values[key]['default']
+            data.current_configs[config_id]['values'].update(newly_added_keys)
 
             # update the default config template file
-            with open("config_app\\config_template.json", "w") as file:
-                json.dump(data.config_template[template_id], file)
+            with open("config_app/config_template.json", "w") as file:
+                json.dump(data.config_template[template_id], file , indent=2)
 
             attrs = data.config_template[template_id]
 
