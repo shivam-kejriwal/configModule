@@ -6,7 +6,8 @@ current_configs = {}
 
 default_values = {}
 
-def createDefaultObject(template_object):
+
+def CreateDefaultObject(template_object):
     for key in template_object['configFields']:
         default_values[key] = template_object['configFields'][key]['default']
 
@@ -15,10 +16,4 @@ with open("config_app/config_template.json", "rb") as file:
     template = json.load(file)
     template_id = template['templateID']
     config_template[template_id] = template
-    createDefaultObject(config_template[template_id])
-
-
-
-
-
-    
+    CreateDefaultObject(config_template[template_id])

@@ -1,11 +1,9 @@
-from os import error
-from rest_framework.views import APIView
-from rest_framework.response import Response
 from rest_framework import status
-from .serializers import ConfigSerializer
-from config_app import data
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
-from config_app import serializers
+from config_app import data
+from .serializers import *
 
 
 class ConfigAPIView(APIView):
@@ -86,7 +84,6 @@ class EditConfigAPIView(APIView):
     """
 
     def patch(self, request, config_id):
-
         context = {
             'method': request.method,
             'config_id': str(config_id)
@@ -97,3 +94,42 @@ class EditConfigAPIView(APIView):
             return Response(serializer.validated_data, status=status.HTTP_201_CREATED)
 
 
+class BulkUpdateAPIView(APIView):
+
+    """
+
+    This API is used to update the template,
+    update the given configs a/c to modified template,
+    existing configs will be filled with default values.
+
+    """
+
+    def post(self, request):
+
+        try:
+            all_configs = request.data['configs']
+        except Exception as e:
+            return Response(e, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            serializer = TemplateSerializer(data=request.data['templates'], context={'method': request.method})
+        except Exception as e:
+            return Response(e, status=status.HTTP_400_BAD_REQUEST)
+
+        message = []
+        if serializer.is_valid(raise_exception=True):
+
+            for config in all_configs:
+                msg = {}
+                if 'configID' in config:
+                    context = {
+                        'method': 'PATCH',
+                        'config_id': config['configID']
+                    }
+                    conf_serializer = ConfigSerializer(data=config, context=context)
+                    if conf_serializer.is_valid():
+                        msg['success'] = True
+                        msg['configID'] = config['configID']
+                        message.append(msg)
+
+        return Response(message, status=status.HTTP_200_OK)
