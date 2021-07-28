@@ -107,24 +107,21 @@ class BulkUpdateAPIView(APIView):
     def post(self, request):
 
         try:
+            all_configs = request.data['configs']
+        except Exception as e:
+            return Response(e, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
             serializer = TemplateSerializer(data=request.data['templates'], context={'method': request.method})
         except Exception as e:
             return Response(e, status=status.HTTP_400_BAD_REQUEST)
 
         message = []
-
         if serializer.is_valid(raise_exception=True):
 
-            try:
-                all_configs = request.data['configs']
-            except Exception as e:
-                return Response(e, status=status.HTTP_400_BAD_REQUEST)
-
             for config in all_configs:
-
                 msg = {}
                 if 'configID' in config:
-
                     context = {
                         'method': 'PATCH',
                         'config_id': config['configID']
