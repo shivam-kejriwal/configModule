@@ -90,7 +90,11 @@ class ConfigSerializer(serializers.Serializer):
         if method == 'POST':
             config_id = str(uuid.uuid4())
             attrs['configID'] = config_id
+            values = attrs['values'].copy()
+            attrs['values'] = data.default_values.copy()
+            attrs['values'].update(values)
             data.current_configs[config_id] = attrs
+
         elif method == 'PATCH':
             config_id = self.context.get('config_id')
 
@@ -100,8 +104,7 @@ class ConfigSerializer(serializers.Serializer):
             except KeyError as e:
                 raise serializers.ValidationError(e)
 
-            data.current_configs[config_id]['configName'] = (attrs.get('configName'))
-
+            data.current_configs[config_id]['configName'] = attrs.get('configName')
             attrs = data.current_configs[config_id]
 
         return super().validate(attrs)
