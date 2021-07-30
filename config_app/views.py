@@ -8,6 +8,11 @@ from .serializers import *
 
 class ConfigAPIView(APIView):
 
+    """
+    The API creates the new configs in the memory.
+    Returns the created config in response.
+    """
+
     def post(self, request):
         context = {
             'method': request.method
@@ -34,6 +39,10 @@ class TemplateAPIView(APIView):
 
 class ListConfigAPIView(APIView):
 
+    """
+    Returns a json response of configs conatining the list of configs.In case of no configs available return empty list!
+    """
+
     def get(self, request):
         try:
             get_configs = data.current_configs.values()
@@ -47,42 +56,32 @@ class ListConfigAPIView(APIView):
 
 class CheckConfigAPIView(APIView):
 
+    """
+    Check a particular config and template is available in the mermory or not!
+    """
+
+
     def get(self, request):
         json_data = {}
         config_id = request.query_params.get('configID', None)
-        template_id = request.query_params.get('templateID', None)
+        template_id = request.query_params.get('templateID' , None)
         error_response = {
-            'success': False 
+            'success': False,
+            'message' : 'key Not Found'
         }
-
-        if template_id is not None:
-            try:
-                json_data['template'] = data.config_template[template_id]
-            except Exception as e:
-                error_response['message'] = 'templateID key not found'
-                return Response(error_response, status=status.HTTP_400_BAD_REQUEST)
-        else:
-            error_response['message'] = 'missing templateID in URL'
-            return Response(error_response, status=status.HTTP_404_NOT_FOUND)
-
-        if config_id is not None:
-            try:
-                json_data['config'] = data.current_configs[config_id]
-            except Exception as e:
-                error_response['message'] = 'configID key not found'
-                return Response(error_response, status=status.HTTP_400_BAD_REQUEST)
-        else:
-            error_response['message'] = 'missing configID in URL'
-            return Response(error_response, status=status.HTTP_404_NOT_FOUND)
+        try:
+            json_data['template'] = data.config_template[template_id]
+            json_data['config'] = data.current_configs[config_id]
+        except Exception as e:
+            return Response(error_response, status=status.HTTP_400_BAD_REQUEST)
 
         return Response(json_data, status=status.HTTP_200_OK)
 
 
 class EditConfigAPIView(APIView):
+
     """
-
     Edit a Particular Configuration
-
     """
 
     def patch(self, request, config_id):
@@ -99,11 +98,9 @@ class EditConfigAPIView(APIView):
 class BulkUpdateAPIView(APIView):
 
     """
-
     This API is used to update the template,
     update the given configs a/c to modified template,
     existing configs will be filled with default values.
-
     """
 
     def post(self, request):
@@ -111,12 +108,12 @@ class BulkUpdateAPIView(APIView):
         try:
             all_configs = request.data['configs']
         except Exception as e:
-            return Response(e, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'message' : 'Configs key error'}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
             serializer = TemplateSerializer(data=request.data['templates'], context={'method': request.method})
         except Exception as e:
-            return Response(e, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'message' : 'template key error'}, status=status.HTTP_400_BAD_REQUEST)
 
         message = []
         if serializer.is_valid(raise_exception=True):
