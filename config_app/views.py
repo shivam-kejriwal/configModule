@@ -126,9 +126,12 @@ class BulkUpdateAPIView(APIView):
                         'config_id': config['configID']
                     }
                     conf_serializer = ConfigSerializer(data=config, context=context)
+                    
                     if conf_serializer.is_valid():
                         msg['success'] = True
-                        msg['configID'] = config['configID']
-                        message.append(msg)
+                    else :
+                        msg['success'] = False
+                    msg['configID'] = config['configID']
+                    message.append(msg)
 
         return Response(message, status=status.HTTP_200_OK)
