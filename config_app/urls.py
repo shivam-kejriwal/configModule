@@ -2,7 +2,7 @@ from django.urls import path
 from .views import *
 
 urlpatterns = [
-    path('config/create', ConfigAPIView.as_view()),
+    path('config/create', ConfigAPIView.as_view() , name = "create"),
     path('template', TemplateAPIView.as_view()),
     path('config', ListConfigAPIView.as_view()),
     path('config/check', CheckConfigAPIView.as_view()),

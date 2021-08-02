@@ -28,11 +28,6 @@ class TemplateSerializer(serializers.Serializer):
             if 'type' not in values[key]:
                 raise serializers.ValidationError('Must include type')
 
-            # all new config fields must added to all existing configs with the default values
-            for config_id in data.current_configs:
-                if key not in data.current_configs[config_id]['values']:
-                    data.current_configs[config_id]['values'][key] = values[key]['default']
-
         method = self.context.get('method')
 
         if method == 'POST':
@@ -44,8 +39,9 @@ class TemplateSerializer(serializers.Serializer):
             # all new config values should be updated in the template
             data.config_template[template_id]['configFields'].update(values)
 
-            # all new config fields must added to all existing configs with the default values
-            data.current_configs[config_id]['values'].update(newly_added_keys)
+            # all new config fields must added to all existing configs with the default value
+            for config_id in data.current_configs:
+                data.current_configs[config_id]['values'].update(newly_added_keys)
 
             # update the default config template file
             with open("config_app/config_template.json", "w") as file:

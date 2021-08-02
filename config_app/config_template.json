@@ -14,9 +14,9 @@
       "label": "First Name"
     },
     "lastName": {
-        "type": "string",
-        "default": "Last Name",
-        "label": "Last Name"
+      "type": "string",
+      "default": "Last Name",
+      "label": "Last Name"
     },
     "showTermsAndConditions": {
       "type": "boolean",
