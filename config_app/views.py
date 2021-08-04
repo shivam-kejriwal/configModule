@@ -19,8 +19,8 @@ class ConfigAPIView(APIView):
         }
 
         serializer = ConfigSerializer(data=request.data, context=context)
-        if serializer.is_valid(raise_exception=True):
-            return Response(serializer.validated_data, status=status.HTTP_201_CREATED)
+        serializer.is_valid(raise_exception=True)
+        return Response(serializer.validated_data, status=status.HTTP_201_CREATED)
 
 
 class TemplateAPIView(APIView):
@@ -91,8 +91,8 @@ class EditConfigAPIView(APIView):
         }
 
         serializer = ConfigSerializer(data=request.data, context=context)
-        if serializer.is_valid(raise_exception=True):
-            return Response(serializer.validated_data, status=status.HTTP_201_CREATED)
+        serializer.is_valid(raise_exception=True)
+        return Response(serializer.validated_data, status=status.HTTP_201_CREATED)
 
 
 class BulkUpdateAPIView(APIView):
@@ -116,22 +116,22 @@ class BulkUpdateAPIView(APIView):
             return Response({'message' : 'template key error'}, status=status.HTTP_400_BAD_REQUEST)
 
         message = []
-        if serializer.is_valid(raise_exception=True):
+        serializer.is_valid(raise_exception=True)
 
-            for config in all_configs:
-                msg = {}
-                if 'configID' in config:
-                    context = {
-                        'method': 'PATCH',
-                        'config_id': config['configID']
-                    }
-                    conf_serializer = ConfigSerializer(data=config, context=context)
-                    
-                    if conf_serializer.is_valid():
-                        msg['success'] = True
-                    else :
-                        msg['success'] = False
-                    msg['configID'] = config['configID']
-                    message.append(msg)
+        for config in all_configs:
+            msg = {}
+            if 'configID' in config:
+                context = {
+                    'method': 'PATCH',
+                    'config_id': config['configID']
+                }
+                conf_serializer = ConfigSerializer(data=config, context=context)
+                
+                if conf_serializer.is_valid():
+                    msg['success'] = True
+                else :
+                    msg['success'] = False
+                msg['configID'] = config['configID']
+                message.append(msg)
 
         return Response(message, status=status.HTTP_200_OK)

@@ -10,12 +10,12 @@
     },
     "firstName": {
       "type": "string",
-      "default": "First Name",
+      "default": "",
       "label": "First Name"
     },
     "lastName": {
       "type": "string",
-      "default": "Last Name",
+      "default": "",
       "label": "Last Name"
     },
     "showTermsAndConditions": {
