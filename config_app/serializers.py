@@ -17,7 +17,7 @@ class TemplateSerializer(serializers.Serializer):
         template_id = str(attrs.get('templateID'))
 
         if template_id not in data.config_template.keys():
-            return serializers.ValidationError('Requested Template ID does not exist')
+            raise serializers.ValidationError('Requested Template ID does not exist')
 
         values = attrs.get('configFields')
 
