@@ -108,12 +108,12 @@ class BulkUpdateAPIView(APIView):
         try:
             all_configs = request.data['configs']
         except Exception as e:
-            return Response({'message' : 'Configs key error'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'non_field_errors' : ['Configs key error']}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
             serializer = TemplateSerializer(data=request.data['templates'], context={'method': request.method})
         except Exception as e:
-            return Response({'message' : 'template key error'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'non_field_errors' : ['template key error']}, status=status.HTTP_400_BAD_REQUEST)
 
         message = []
         serializer.is_valid(raise_exception=True)
